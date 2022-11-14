@@ -1,0 +1,19 @@
+[package]
+org = "kaneel"
+name = "red_cross2"
+version = "0.1.0"
+distribution = "2201.2.2"
+
+[build-options]
+observabilityIncluded = true
+
+[[platform.java11.dependency]]
+groupId = "mysql"
+artifactId = "mysql-connector-java"
+version = "8.0.29"
+
+[[dependency]]
+org = "ballerina"
+name = "persist"
+version = "0.1.0"
+repository = "local"

@@ -1,0 +1,7 @@
+[kaneel.red_cross2.clients]
+host = "localhost"
+port = 3305
+user = "root"
+password = "Test123#"
+database = "redcross2"
+
