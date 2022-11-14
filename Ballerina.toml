@@ -17,3 +17,9 @@ org = "ballerina"
 name = "persist"
 version = "0.1.0"
 repository = "local"
+
+[[dependency]]
+org = "ballerina"
+name = "http"
+version = "2.5.0"
+repository = "local"
