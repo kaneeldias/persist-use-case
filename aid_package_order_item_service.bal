@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import red_cross2.clients;
+import use_case.clients;
 import ballerina/http;
 
 service /aidPackageOrderItem on new http:Listener(8086) {
