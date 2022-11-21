@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class SupplierInfoClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "SupplierInfo";
     private final sql:ParameterizedQuery tableName = `SupplierInfo`;
@@ -13,17 +14,17 @@ public client class SupplierInfoClient {
         shortName: {columnName: "shortName", 'type: string},
         email: {columnName: "email", 'type: string},
         phoneNumber: {columnName: "phoneNumber", 'type: string},
-        "quotes[].quoteId": {'type: int, relation: {entityName: "quote", refTable: "Quotes", refField: "quoteId"}},
-        "quotes[].maxQuantity": {'type: int, relation: {entityName: "quote", refTable: "Quotes", refField: "maxQuantity"}},
-        "quotes[].period": {'type: int, relation: {entityName: "quote", refTable: "Quotes", refField: "period"}},
-        "quotes[].brandName": {'type: string, relation: {entityName: "quote", refTable: "Quotes", refField: "brandName"}},
-        "quotes[].unitPrice": {'type: int, relation: {entityName: "quote", refTable: "Quotes", refField: "unitPrice"}},
-        "quotes[].expiryDate": {'type: int, relation: {entityName: "quote", refTable: "Quotes", refField: "expiryDate"}},
-        "quotes[].regulatoryInfo": {'type: string, relation: {entityName: "quote", refTable: "Quotes", refField: "regulatoryInfo"}}
-    };  
+        "quotes[].quoteId": {'type: int, relation: {entityName: "quotes", refTable: "Quote", refField: "quoteId"}},
+        "quotes[].maxQuantity": {'type: int, relation: {entityName: "quotes", refTable: "Quote", refField: "maxQuantity"}},
+        "quotes[].period": {'type: int, relation: {entityName: "quotes", refTable: "Quote", refField: "period"}},
+        "quotes[].brandName": {'type: string, relation: {entityName: "quotes", refTable: "Quote", refField: "brandName"}},
+        "quotes[].unitPrice": {'type: int, relation: {entityName: "quotes", refTable: "Quote", refField: "unitPrice"}},
+        "quotes[].expiryDate": {'type: int, relation: {entityName: "quotes", refTable: "Quote", refField: "expiryDate"}},
+        "quotes[].regulatoryInfo": {'type: string, relation: {entityName: "quotes", refTable: "Quote", refField: "regulatoryInfo"}}
+    };
     private string[] keyFields = ["supplierId"];
 
-    private final map<persist:JoinMetadata> joinMetadata = {};
+    private final map<persist:JoinMetadata> joinMetadata = {quotes: {entity: Quote, fieldName: "quotes", refTable: "Quote", refFields: ["quoteId"], joinColumns: ["quoteQuoteId"], 'type: persist:MANY}};
 
     private persist:SQLClient persistClient;
 
@@ -36,16 +37,16 @@ public client class SupplierInfoClient {
     }
 
     remote function create(SupplierInfo value) returns SupplierInfo|persist:Error {
-        sql:ExecutionResult result = check self.persistClient.runInsertQuery(value);
-        return {supplierId: <int>result.lastInsertId, name: value.name, shortName: value.shortName, email: value.email, phoneNumber: value.phoneNumber, quotes: value.quotes};
+        _ = check self.persistClient.runInsertQuery(value);
+        return value;
     }
 
-    remote function readByKey(int key) returns SupplierInfo|persist:Error {
-        return <SupplierInfo>check self.persistClient.runReadByKeyQuery(SupplierInfo, key);
+    remote function readByKey(int key, SupplierInfoRelations[] include = []) returns SupplierInfo|persist:Error {
+        return <SupplierInfo>check self.persistClient.runReadByKeyQuery(SupplierInfo, key, include);
     }
 
-    remote function read() returns stream<SupplierInfo, persist:Error?> {
-        stream<anydata, sql:Error?>|persist:Error result = self.persistClient.runReadQuery(SupplierInfo);
+    remote function read(SupplierInfoRelations[] include = []) returns stream<SupplierInfo, persist:Error?> {
+        stream<anydata, sql:Error?>|persist:Error result = self.persistClient.runReadQuery(SupplierInfo, include);
         if result is persist:Error {
             return new stream<SupplierInfo, persist:Error?>(new SupplierInfoStream((), result));
         } else {
@@ -86,14 +87,23 @@ public client class SupplierInfoClient {
     }
 }
 
+public enum SupplierInfoRelations {
+    // TODO: bug
+    QuoteEntity2 = "quotes"
+}
+
 public class SupplierInfoStream {
 
     private stream<anydata, sql:Error?>? anydataStream;
     private persist:Error? err;
+    private SupplierInfoRelations[]? include;
+    private persist:SQLClient? persistClient;
 
-    public isolated function init(stream<anydata, sql:Error?>? anydataStream, persist:Error? err = ()) {
+    public isolated function init(stream<anydata, sql:Error?>? anydataStream, persist:Error? err = (), SupplierInfoRelations[]? include = (), persist:SQLClient? persistClient = ()) {
         self.anydataStream = anydataStream;
         self.err = err;
+        self.include = include;
+        self.persistClient = persistClient;
     }
 
     public isolated function next() returns record {|SupplierInfo value;|}|persist:Error? {
@@ -108,6 +118,7 @@ public class SupplierInfoStream {
                 return <persist:Error>error(streamValue.message());
             } else {
                 record {|SupplierInfo value;|} nextRecord = {value: <SupplierInfo>streamValue.value};
+                check (<persist:SQLClient>self.persistClient).getManyRelations(nextRecord.value, <SupplierInfoRelations[]>self.include);
                 return nextRecord;
             }
         } else {

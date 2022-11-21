@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class PledgeClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "Pledge";
     private final sql:ParameterizedQuery tableName = `Pledge`;

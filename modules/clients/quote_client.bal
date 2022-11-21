@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class QuoteClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "Quote";
     private final sql:ParameterizedQuery tableName = `Quote`;
@@ -22,7 +23,7 @@ public client class QuoteClient {
         "supplier.phoneNumber": {'type: string, relation: {entityName: "supplier", refTable: "SupplierInfo", refField: "phoneNumber"}},
         "item.itemId": {columnName: "itemId", 'type: int, relation: {entityName: "item", refTable: "MedicalItem", refField: "itemId"}},
         "item.name": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "name"}},
-        "item.'type": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "'type"}},
+        "item.'type": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "type"}},
         "item.unit": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "unit"}}
     };
     private string[] keyFields = ["quoteId"];

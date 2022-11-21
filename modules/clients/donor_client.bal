@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class DonorClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "Donor";
     private final sql:ParameterizedQuery tableName = `Donor`;
@@ -17,8 +18,6 @@ public client class DonorClient {
     };
     private string[] keyFields = ["donorId"];
 
-    private final map<persist:JoinMetadata> joinMetadata = {};
-
     private persist:SQLClient persistClient;
 
     public function init() returns persist:Error? {
@@ -26,7 +25,7 @@ public client class DonorClient {
         if dbClient is sql:Error {
             return <persist:Error>error(dbClient.message());
         }
-        self.persistClient = check new (dbClient, self.entityName, self.tableName, self.keyFields, self.fieldMetadata, self.joinMetadata);
+        self.persistClient = check new (dbClient, self.entityName, self.tableName, self.keyFields, self.fieldMetadata);
     }
 
     remote function create(Donor value) returns Donor|persist:Error {

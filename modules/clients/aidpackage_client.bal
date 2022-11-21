@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class AidPackageClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "AidPackage";
     private final sql:ParameterizedQuery tableName = `AidPackage`;
@@ -18,7 +19,6 @@ public client class AidPackageClient {
         "supplier.email": {'type: string, relation: {entityName: "supplier", refTable: "SupplierInfo", refField: "email"}},
         "supplier.phoneNumber": {'type: string, relation: {entityName: "supplier", refTable: "SupplierInfo", refField: "phoneNumber"}}
     };
-    
     private string[] keyFields = ["packageId"];
 
     private final map<persist:JoinMetadata> joinMetadata = {supplier: {entity: SupplierInfo, fieldName: "supplier", refTable: "SupplierInfo", refFields: ["supplierId"], joinColumns: ["supplierId"]}};

@@ -4,6 +4,7 @@ import ballerina/time;
 import ballerina/persist;
 
 public client class MedicalNeedClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "MedicalNeed";
     private final sql:ParameterizedQuery tableName = `MedicalNeed`;
@@ -16,7 +17,7 @@ public client class MedicalNeedClient {
         quantity: {columnName: "quantity", 'type: int},
         "item.itemId": {columnName: "itemId", 'type: int, relation: {entityName: "item", refTable: "MedicalItem", refField: "itemId"}},
         "item.name": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "name"}},
-        "item.'type": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "'type"}},
+        "item.'type": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "type"}},
         "item.unit": {'type: string, relation: {entityName: "item", refTable: "MedicalItem", refField: "unit"}}
     };
     private string[] keyFields = ["needId"];

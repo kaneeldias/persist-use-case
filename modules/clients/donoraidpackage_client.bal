@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class DonorAidPackageClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "DonorAidPackage";
     private final sql:ParameterizedQuery tableName = `DonorAidPackage`;
@@ -12,12 +13,7 @@ public client class DonorAidPackageClient {
         description: {columnName: "description", 'type: string},
         name: {columnName: "name", 'type: string},
         status: {columnName: "status", 'type: string},
-        totalAmount: {
-            columnName: "totalAmount",
-            'type:  //many-to-many
-//DonorAidPackageOrderItem[]orderItems;
-int
-        },
+        totalAmount: {columnName: "totalAmount", 'type: int},
         pledgedPercentage: {columnName: "pledgedPercentage", 'type: decimal},
         "package.packageId": {columnName: "packageId", 'type: int, relation: {entityName: "package", refTable: "AidPackage", refField: "packageId"}},
         "package.description": {'type: int, relation: {entityName: "package", refTable: "AidPackage", refField: "description"}},

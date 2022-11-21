@@ -2,17 +2,6 @@ import ballerina/time;
 import ballerina/persist;
 
 @persist:Entity {
-    key: ["requirementId"]
-}
-public type RequirementList record {
-    readonly int requirementId;
-    string name;
-
-    // Many-to-many
-    // MedicalNeed[] items; // e.g. [10,000 vaccs, 200k panadol, ..]
-};
-
-@persist:Entity {
     key: ["needId"]
 }
 public type MedicalNeed record {
@@ -52,7 +41,6 @@ public type SupplierInfo record {
     string email; 
     string phoneNumber;
 
-    //One-to-many
     Quote[] quotes?;
 };
 
@@ -63,7 +51,6 @@ public type Quote record {
     @persist:AutoIncrement
     readonly int quoteId = -1;
 
-    // One-to-many
     @persist:Relation {keyColumns: ["supplierId"], reference: ["supplierId"]}
     SupplierInfo supplier?;
 
@@ -81,7 +68,7 @@ public type Quote record {
 @persist:Entity {
     key: ["packageId"]
 }
-public type AidPackage record { // e.g. an order to one supplier
+public type AidPackage record {
     @persist:AutoIncrement
     readonly int packageId = -1;
 
@@ -151,7 +138,7 @@ public type Donor record {
 @persist:Entity {
     key: ["id"]
 }
-public type DonorAidPackage record { // e.g. an order to one supplier
+public type DonorAidPackage record {
     @persist:AutoIncrement
     readonly int id = -1;
     
@@ -165,8 +152,6 @@ public type DonorAidPackage record { // e.g. an order to one supplier
     @persist:Relation { keyColumns: ["supplierId"], reference: ["supplierId"] }
     SupplierInfo supplier?;
     
-    // many-to-many
-    // DonorAidPackageOrderItem[] orderItems;
     int totalAmount; 
     decimal pledgedPercentage;  
 };

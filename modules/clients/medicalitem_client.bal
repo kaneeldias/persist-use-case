@@ -3,6 +3,7 @@ import ballerinax/mysql;
 import ballerina/persist;
 
 public client class MedicalItemClient {
+    *persist:AbstractPersistClient;
 
     private final string entityName = "MedicalItem";
     private final sql:ParameterizedQuery tableName = `MedicalItem`;
@@ -15,8 +16,6 @@ public client class MedicalItemClient {
     };
     private string[] keyFields = ["itemId"];
 
-    private final map<persist:JoinMetadata> joinMetadata = {};
-
     private persist:SQLClient persistClient;
 
     public function init() returns persist:Error? {
@@ -24,7 +23,7 @@ public client class MedicalItemClient {
         if dbClient is sql:Error {
             return <persist:Error>error(dbClient.message());
         }
-        self.persistClient = check new (dbClient, self.entityName, self.tableName, self.keyFields, self.fieldMetadata, self.joinMetadata);
+        self.persistClient = check new (dbClient, self.entityName, self.tableName, self.keyFields, self.fieldMetadata);
     }
 
     remote function create(MedicalItem value) returns MedicalItem|persist:Error {

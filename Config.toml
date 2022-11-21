@@ -1,7 +1,7 @@
-[kaneel.red_cross2.clients]
+[use_case.clients]
 host = "localhost"
-port = 3305
+port = 3306
 user = "root"
-password = "Test123#"
-database = "redcross2"
+password = ""
+database = ""
 
